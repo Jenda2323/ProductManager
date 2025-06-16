@@ -45,11 +45,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginWithGoogle = () => {
-    const callbackUrl = `${FRONTEND_URL}/index.html`;
     const scope = "email profile";
-    window.location.href = `${API_URL}/users/auth/google?redirect_uri=${encodeURIComponent(
-      callbackUrl
-    )}&scope=${encodeURIComponent(scope)}`;
+    window.location.href = `${API_URL}/users/auth/google?scope=${encodeURIComponent(
+      scope
+    )}`;
   };
 
   const logout = () => {

@@ -42,6 +42,8 @@ export const loginUser = async (req, res) => {
 // Google OAuth route
 export const googleAuth = passport.authenticate("google", {
   scope: ["profile", "email"],
+  callbackURL:
+    "https://findproducts-backend.onrender.com/api/users/auth/google/callback",
 });
 
 // Google OAuth callback route
