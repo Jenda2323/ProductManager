@@ -2,6 +2,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = "https://findproducts-backend.onrender.com/api";
+const FRONTEND_URL = "https://janfiser.hys.cz/Projects/findproducts";
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -21,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async (token) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users/me", {
+      const response = await axios.get(`${API_URL}/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(response.data);
@@ -42,7 +45,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginWithGoogle = () => {
-    window.location.href = "http://localhost:5000/api/users/auth/google";
+    const callbackUrl = `${FRONTEND_URL}/index.html`;
+    const scope = "email profile";
+    window.location.href = `${API_URL}/users/auth/google?redirect_uri=${encodeURIComponent(
+      callbackUrl
+    )}&scope=${encodeURIComponent(scope)}`;
   };
 
   const logout = () => {

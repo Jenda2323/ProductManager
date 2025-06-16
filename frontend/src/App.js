@@ -8,10 +8,8 @@ import { useAuth } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL =
-  process.env.NODE_ENV === "production"
-    ? "http://localhost:5000/api" // Zatím ponecháme localhost, upravíme až budeme mít Render URL
-    : "http://localhost:5000/api";
+const API_URL = "https://findproducts-backend.onrender.com/api";
+const BASE_URL = "https://janfiser.hys.cz/Projects/findproducts";
 
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
