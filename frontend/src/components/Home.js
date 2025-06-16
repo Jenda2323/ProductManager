@@ -20,7 +20,15 @@ const Home = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/products");
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "https://findproducts-backend.onrender.com/api/products",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setProducts(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -32,14 +40,28 @@ const Home = () => {
 
   const handleProductSubmit = async (productData) => {
     try {
+      const token = localStorage.getItem("token");
       if (editingProduct) {
         await axios.put(
-          `http://localhost:5000/api/products/${editingProduct._id}`,
-          productData
+          `https://findproducts-backend.onrender.com/api/products/${editingProduct._id}`,
+          productData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         toast.success("Produkt byl úspěšně upraven");
       } else {
-        await axios.post("http://localhost:5000/api/products", productData);
+        await axios.post(
+          "https://findproducts-backend.onrender.com/api/products",
+          productData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         toast.success("Produkt byl úspěšně vytvořen");
       }
       setShowForm(false);
@@ -54,7 +76,15 @@ const Home = () => {
   const handleDelete = async (productId) => {
     if (window.confirm("Opravdu chcete smazat tento produkt?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/products/${productId}`);
+        const token = localStorage.getItem("token");
+        await axios.delete(
+          `https://findproducts-backend.onrender.com/api/products/${productId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         toast.success("Produkt byl úspěšně smazán");
         fetchProducts();
       } catch (error) {

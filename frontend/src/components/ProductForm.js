@@ -176,6 +176,9 @@ const ProductForm = ({ onSubmit, product }) => {
               fontSize: "1rem",
               borderRadius: "5px",
               border: errors.name ? "1px solid red" : "1px solid #ccc",
+              boxSizing: "border-box",
+              height: "44px",
+              paddingRight: "2.5rem",
             }}
           />
           {errors.name && (
@@ -188,34 +191,32 @@ const ProductForm = ({ onSubmit, product }) => {
         </div>
 
         <div style={{ marginBottom: "1rem" }}>
-          <div style={{ position: "relative" }}>
-            <input
-              type="number"
-              name="cost"
-              value={formData.cost}
-              onChange={handleChange}
-              placeholder="Cena"
-              style={{
-                width: "100%",
-                padding: "0.8rem",
-                fontSize: "1rem",
-                borderRadius: "5px",
-                border: errors.cost ? "1px solid red" : "1px solid #ccc",
-                paddingRight: "3rem",
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                right: "1rem",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "#666",
-              }}
-            >
-              Kč
-            </span>
-          </div>
+          <label
+            htmlFor="cost"
+            style={{
+              display: "block",
+              marginBottom: "0.5rem",
+              color: "#333",
+            }}
+          >
+            Cena
+          </label>
+          <input
+            type="number"
+            name="cost"
+            value={formData.cost}
+            onChange={handleChange}
+            placeholder="Cena v Kč"
+            style={{
+              width: "100%",
+              padding: "0.8rem",
+              fontSize: "1rem",
+              borderRadius: "5px",
+              border: errors.cost ? "1px solid red" : "1px solid #ccc",
+              boxSizing: "border-box",
+              height: "44px",
+            }}
+          />
           {errors.cost && (
             <p
               style={{ color: "red", marginTop: "0.5rem", fontSize: "0.9rem" }}
@@ -238,6 +239,9 @@ const ProductForm = ({ onSubmit, product }) => {
               fontSize: "1rem",
               borderRadius: "5px",
               border: errors.image ? "1px solid red" : "1px solid #ccc",
+              boxSizing: "border-box",
+              height: "44px",
+              paddingRight: "2.5rem",
             }}
           />
           <input
@@ -268,6 +272,9 @@ const ProductForm = ({ onSubmit, product }) => {
               fontSize: "1rem",
               borderRadius: "5px",
               border: errors.contact ? "1px solid red" : "1px solid #ccc",
+              boxSizing: "border-box",
+              height: "44px",
+              paddingRight: "2.5rem",
             }}
           />
           {errors.contact && (
