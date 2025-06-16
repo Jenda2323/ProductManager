@@ -8,6 +8,11 @@ import { useAuth } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? "http://localhost:5000/api" // Zatím ponecháme localhost, upravíme až budeme mít Render URL
+    : "http://localhost:5000/api";
+
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
