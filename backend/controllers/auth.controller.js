@@ -63,8 +63,9 @@ export const googleAuthRedirect = (req, res) => {
 
     console.log("Generated token for user:", req.user._id);
 
-    // Redirect to frontend with token
-    res.redirect(`${process.env.FRONTEND_URL}?token=${token}`);
+    // Redirect to frontend with token (without index.html)
+    const frontendUrl = process.env.FRONTEND_URL.replace("/index.html", "");
+    res.redirect(`${frontendUrl}?token=${token}`);
   } catch (error) {
     console.error("Error in googleAuthRedirect:", error);
     res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
