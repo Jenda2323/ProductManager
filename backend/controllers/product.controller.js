@@ -5,43 +5,43 @@ export const getProducts = async (req, res) => {
     const products = await Product.find();
     res.json(products);
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Chyba při načítání produktů:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// Create a new product
+// Vytvoření nového produktu
 export const createProduct = async (req, res) => {
   try {
-    console.log("Received product data:", req.body);
-    console.log("User ID:", req.userId);
+    console.log("Přijatá data produktu:", req.body);
+    console.log("ID uživatele:", req.userId);
 
     const { name, image, cost, contact } = req.body;
 
-    // Validate required fields
+    // Validace povinných polí
     if (!name || !image || !cost || !contact) {
-      console.error("Missing required fields:", { name, image, cost, contact });
+      console.error("Chybí povinná pole:", { name, image, cost, contact });
       return res.status(400).json({
-        message: "Missing required fields",
+        message: "Chybí povinná pole",
         details: {
-          name: !name ? "Product name is required" : null,
-          image: !image ? "Image is required" : null,
-          cost: !cost ? "Cost is required" : null,
-          contact: !contact ? "Contact is required" : null,
+          name: !name ? "Název produktu je povinný" : null,
+          image: !image ? "Obrázek je povinný" : null,
+          cost: !cost ? "Cena je povinná" : null,
+          contact: !contact ? "Kontakt je povinný" : null,
         },
       });
     }
 
-    // Validate cost is a positive number
+    // Validace, že cena je kladné číslo
     if (isNaN(cost) || cost <= 0) {
-      console.error("Invalid cost:", cost);
+      console.error("Neplatná cena:", cost);
       return res.status(400).json({
-        message: "Invalid cost value",
-        details: "Cost must be a positive number",
+        message: "Neplatná hodnota ceny",
+        details: "Cena musí být kladné číslo",
       });
     }
 
-    // Create new product
+    // Vytvoření nového produktu
     const newProduct = new Product({
       name,
       image,
@@ -50,86 +50,86 @@ export const createProduct = async (req, res) => {
       owner: req.userId,
     });
 
-    console.log("Creating new product:", newProduct);
+    console.log("Vytváření nového produktu:", newProduct);
 
     const savedProduct = await newProduct.save();
-    console.log("Product saved successfully:", savedProduct);
+    console.log("Produkt úspěšně uložen:", savedProduct);
 
     res.status(201).json(savedProduct);
   } catch (error) {
-    console.error("Error creating product:", error);
+    console.error("Chyba při vytváření produktu:", error);
     res.status(500).json({
-      message: "Error creating product",
+      message: "Chyba při vytváření produktu",
       details: error.message,
     });
   }
 };
 
-// Update a product
+// Aktualizace produktu
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("Updating product:", id);
-    console.log("Update data:", req.body);
+    console.log("Aktualizace produktu:", id);
+    console.log("Data pro aktualizaci:", req.body);
 
     const product = await Product.findById(id);
     if (!product) {
-      console.error("Product not found:", id);
-      return res.status(404).json({ message: "Product not found" });
+      console.error("Produkt nebyl nalezen:", id);
+      return res.status(404).json({ message: "Produkt nebyl nalezen" });
     }
 
     if (product.owner.toString() !== req.userId) {
-      console.error("Unauthorized update attempt:", {
+      console.error("Neoprávněný pokus o aktualizaci:", {
         productOwner: product.owner,
         userId: req.userId,
       });
-      return res.status(403).json({ message: "Forbidden" });
+      return res.status(403).json({ message: "Zakázáno" });
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     });
-    console.log("Product updated successfully:", updatedProduct);
+    console.log("Produkt úspěšně aktualizován:", updatedProduct);
 
     res.json(updatedProduct);
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error("Chyba při aktualizaci produktu:", error);
     res.status(400).json({
-      message: "Error updating product",
+      message: "Chyba při aktualizaci produktu",
       details: error.message,
     });
   }
 };
 
-// Delete a product
+// Smazání produktu
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("Deleting product:", id);
+    console.log("Mazání produktu:", id);
 
     const product = await Product.findById(id);
     if (!product) {
-      console.error("Product not found:", id);
-      return res.status(404).json({ message: "Product not found" });
+      console.error("Produkt nebyl nalezen:", id);
+      return res.status(404).json({ message: "Produkt nebyl nalezen" });
     }
 
     if (product.owner.toString() !== req.userId) {
-      console.error("Unauthorized delete attempt:", {
+      console.error("Neoprávněný pokus o smazání:", {
         productOwner: product.owner,
         userId: req.userId,
       });
-      return res.status(403).json({ message: "Forbidden" });
+      return res.status(403).json({ message: "Zakázáno" });
     }
 
     await Product.findByIdAndDelete(id);
-    console.log("Product deleted successfully:", id);
+    console.log("Produkt úspěšně smazán:", id);
 
-    res.json({ message: "Product deleted successfully" });
+    res.json({ message: "Produkt byl úspěšně smazán" });
   } catch (error) {
-    console.error("Error deleting product:", error);
+    console.error("Chyba při mazání produktu:", error);
     res.status(500).json({
-      message: "Error deleting product",
+      message: "Chyba při mazání produktu",
       details: error.message,
     });
   }

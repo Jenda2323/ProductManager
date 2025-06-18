@@ -1,4 +1,4 @@
-// backend/models/user.model.js
+// backend/models/user.model.js - Model uživatele
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({

@@ -1,15 +1,20 @@
-import express from 'express';
-import { createProduct, getProducts, updateProduct, deleteProduct } from '../controllers/product.controller.js';
-import { authenticate } from '../middleware/auth.middleware.js';
+import express from "express";
+import {
+  createProduct,
+  getProducts,
+  updateProduct,
+  deleteProduct,
+} from "../controllers/product.controller.js";
+import { authenticate } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// Public Routes
-router.get('/', getProducts); // View all products without authentication
+// Veřejné cesty
+router.get("/", getProducts); // Zobrazení všech produktů bez autentizace
 
-// Protected Routes
-router.post('/', authenticate, createProduct); // Only logged-in users can add products
-router.put('/:id', authenticate, updateProduct); // Only logged-in users can update
-router.delete('/:id', authenticate, deleteProduct); // Only logged-in users can delete
+// Chráněné cesty
+router.post("/", authenticate, createProduct); // Pouze přihlášení uživatelé mohou přidávat produkty
+router.put("/:id", authenticate, updateProduct); // Pouze přihlášení uživatelé mohou upravovat
+router.delete("/:id", authenticate, deleteProduct); // Pouze přihlášení uživatelé mohou mazat
 
 export default router;

@@ -1,224 +1,80 @@
-//frontend/src/components/Navbar.js
+//frontend/src/components/Navbar.js - Navigační lišta
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
+import "./Navbar.css";
 
-const Navbar = ({ toggleColorMode, colorMode, onSearch }) => {
+const Navbar = ({ onSearch }) => {
   const { user, logout } = useAuth();
-
-  // State for search input
-  const [searchQuery, setSearchQuery] = useState("");
+  const { isDarkMode, toggleTheme } = useTheme();
+  const [searchQuery, setSearchQuery] = useState(""); // Stav pro vyhledávací pole
 
   // Handle search input change
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    onSearch(query); // Call the onSearch function passed as a prop to filter products dynamically
+    onSearch(query); // Volání funkce onSearch předané jako prop pro dynamické filtrování produktů
   };
 
   return (
-    <nav
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "1rem",
-        backgroundColor: "#f0f0f0",
-        position: "relative",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        flexWrap: "wrap",
-      }}
-    >
+    <nav className={`navbar ${isDarkMode ? "dark" : ""}`}>
       {/* Left Section */}
-      <h1
-        style={{
-          fontSize: "1.5rem",
-          fontWeight: "bold",
-          marginBottom: "1rem",
-          flex: "1 1 auto",
-        }}
-      >
-        🎯Find Products⌚
-      </h1>
+      <h1 className="navbar-title">🎯Najdi produkty⌚</h1>
 
       {/* Center Section (Search & Create Button) */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "1rem",
-          flex: "2 1 auto",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="navbar-center">
         {/* Search Input */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-          }}
-        >
+        <div className="search-container">
           <input
             type="text"
             value={searchQuery}
             onChange={handleSearchChange}
-            placeholder="Search by product name"
-            style={{
-              padding: "0.5rem",
-              borderRadius: "5px",
-              border: "1px solid #ccc",
-              width: "250px",
-              outline: "none",
-              transition: "all 0.3s",
-            }}
-            onFocus={(e) => (e.target.style.border = "1px solid #007BFF")}
-            onBlur={(e) => (e.target.style.border = "1px solid #ccc")}
+            placeholder="Vyhledat podle názvu produktu"
+            className="search-input"
           />
           <button
-            style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: "#007BFF",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              transition: "background-color 0.3s",
-            }}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "#0056b3")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = "#007BFF")}
+            className="search-button"
             onClick={() => onSearch(searchQuery)}
           >
-            Search
+            Hledat
           </button>
         </div>
 
         {/* Add Product Button */}
         <Link to="/create">
-          <button
-            style={{
-              fontSize: "1.5rem",
-              border: "none",
-              backgroundColor: "transparent",
-              cursor: "pointer",
-              transition: "transform 0.2s",
-            }}
-            title="Add Product"
-            onMouseEnter={(e) => (e.target.style.transform = "scale(1.1)")}
-            onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
-          >
+          <button className="add-product-button" title="Přidat produkt">
             ➕
           </button>
         </Link>
       </div>
 
       {/* Right Section (User Info) */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "1rem",
-          flex: "1 1 auto",
-        }}
-      >
+      <div className="navbar-right">
         {/* Color Mode Button */}
-        <button
-          onClick={toggleColorMode}
-          style={{
-            backgroundColor: "transparent",
-            border: "none",
-            cursor: "pointer",
-            fontSize: "1.2rem",
-            transition: "transform 0.2s",
-          }}
-          onMouseEnter={(e) => (e.target.style.transform = "scale(1.2)")}
-          onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
-        >
-          {colorMode === "light" ? "🌙" : "☀️"}
+        <button onClick={toggleTheme} className="theme-toggle-button">
+          {isDarkMode ? "🌙" : "☀️"}
         </button>
 
         {/* User Section */}
         {user ? (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "0.5rem",
-            }}
-          >
+          <div className="user-section">
             {/* User Icon */}
-            <div
-              style={{
-                width: "50px",
-                height: "50px",
-                borderRadius: "50%",
-                backgroundColor: "#ddd",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "1.5rem",
-                fontWeight: "bold",
-                color: "#333",
-                marginBottom: "0.3rem",
-                transition: "all 0.3s",
-              }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#007BFF")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "#ddd")}
-            >
+            <div className="user-icon">
               {user.email.charAt(0).toUpperCase()} {/* User Initial */}
             </div>
 
             {/* Email */}
-            <p
-              style={{
-                margin: "0",
-                fontSize: "0.9rem",
-                color: "#333",
-                whiteSpace: "nowrap",
-                textAlign: "center",
-                fontWeight: "500",
-              }}
-            >
-              {user.email}
-            </p>
+            <p className="user-email">{user.email}</p>
 
             {/* Logout Button */}
-            <button
-              onClick={logout}
-              style={{
-                padding: "0.5rem 1rem",
-                backgroundColor: "#007BFF",
-                color: "#fff",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                transition: "background-color 0.3s",
-              }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#0056b3")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "#007BFF")}
-            >
-              Logout
+            <button onClick={logout} className="logout-button">
+              Odhlásit se
             </button>
           </div>
         ) : (
           <Link to="/login">
-            <button
-              style={{
-                padding: "0.5rem 1rem",
-                backgroundColor: "#007BFF",
-                color: "#fff",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                transition: "background-color 0.3s",
-              }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#0056b3")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "#007BFF")}
-            >
-              Login
-            </button>
+            <button className="login-button">Přihlásit se</button>
           </Link>
         )}
       </div>

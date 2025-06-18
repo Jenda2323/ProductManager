@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import "./ProductForm.css";
 
 const ProductForm = ({ onSubmit, product }) => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,18 @@ const ProductForm = ({ onSubmit, product }) => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  // Reset form when product changes
+  useEffect(() => {
+    setFormData({
+      name: product?.name || "",
+      cost: product?.cost || "",
+      image: product?.image || "",
+      contact: product?.contact || "",
+      imageFile: null,
+    });
+    setErrors({});
+  }, [product]);
+
   const validateForm = () => {
     const newErrors = {};
 
@@ -26,7 +39,7 @@ const ProductForm = ({ onSubmit, product }) => {
     }
 
     if (!formData.image && !formData.imageFile) {
-      newErrors.image = "Obrázek je povinný";
+      newErrors.image = "Obrázek je povinný - zadejte URL nebo vyberte soubor";
     }
 
     if (!formData.contact) {
@@ -42,74 +55,64 @@ const ProductForm = ({ onSubmit, product }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    // Clear error when user starts typing
+    // Vymazání chyby, když uživatel začne psát
     if (errors[name]) {
       setErrors({ ...errors, [name]: null });
     }
   };
 
-  const compressImage = (file) => {
-    return new Promise((resolve, reject) => {
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
       const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (event) => {
+      reader.onload = (e) => {
         const img = new Image();
-        img.src = event.target.result;
         img.onload = () => {
           const canvas = document.createElement("canvas");
-          let width = img.width;
-          let height = img.height;
+          const ctx = canvas.getContext("2d");
 
-          // Calculate new dimensions while maintaining aspect ratio
-          const maxDimension = 800;
-          if (width > height && width > maxDimension) {
-            height = Math.round((height * maxDimension) / width);
-            width = maxDimension;
-          } else if (height > maxDimension) {
-            width = Math.round((width * maxDimension) / height);
-            height = maxDimension;
+          // Výpočet nových rozměrů při zachování poměru stran
+          let { width, height } = img;
+          const maxSize = 800;
+          if (width > height) {
+            if (width > maxSize) {
+              height = (height * maxSize) / width;
+              width = maxSize;
+            }
+          } else {
+            if (height > maxSize) {
+              width = (width * maxSize) / height;
+              height = maxSize;
+            }
           }
 
           canvas.width = width;
           canvas.height = height;
-
-          const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Convert to JPEG with quality 0.7
-          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
-          resolve(compressedDataUrl);
-        };
-        img.onerror = reject;
-      };
-      reader.onerror = reject;
-    });
-  };
+          // Převod na base64
+          const base64Image = canvas.toDataURL("image/jpeg", 0.7);
+          setFormData({
+            ...formData,
+            image: base64Image,
+            imageFile: file,
+          });
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        // 5MB limit
-        toast.error("Velikost souboru musí být menší než 5MB");
-        return;
-      }
-      try {
-        const compressedImage = await compressImage(file);
-        setFormData({ ...formData, image: compressedImage, imageFile: file });
-        if (errors.image) {
-          setErrors({ ...errors, image: null });
-        }
-      } catch (error) {
-        console.error("Chyba při zpracování obrázku:", error);
-        toast.error("Chyba při zpracování obrázku. Zkuste jiný.");
-      }
+          // Vymazání chyby obrázku
+          if (errors.image) {
+            setErrors({ ...errors, image: null });
+          }
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const validateContact = (contact) => {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phonePattern = /^\d{9}$/; // České telefonní číslo
+
     return emailPattern.test(contact) || phonePattern.test(contact);
   };
 
@@ -130,75 +133,26 @@ const ProductForm = ({ onSubmit, product }) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: "#f7f7f7",
-        padding: "20px",
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          backgroundColor: "white",
-          padding: "2rem",
-          borderRadius: "8px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          width: "100%",
-          maxWidth: "400px",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            marginBottom: "1.5rem",
-            fontSize: "1.5rem",
-            fontWeight: "600",
-            color: "#333",
-          }}
-        >
+    <div className="product-form-container">
+      <form onSubmit={handleSubmit} className="product-form">
+        <h2 className="product-form-title">
           {product ? "Upravit produkt" : "Vytvořit produkt"}
         </h2>
 
-        <div style={{ marginBottom: "1rem" }}>
+        <div className="form-group">
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
             placeholder="Název produktu"
-            style={{
-              width: "100%",
-              padding: "0.8rem",
-              fontSize: "1rem",
-              borderRadius: "5px",
-              border: errors.name ? "1px solid red" : "1px solid #ccc",
-              boxSizing: "border-box",
-              height: "44px",
-              paddingRight: "2.5rem",
-            }}
+            className={`form-input ${errors.name ? "error" : ""}`}
           />
-          {errors.name && (
-            <p
-              style={{ color: "red", marginTop: "0.5rem", fontSize: "0.9rem" }}
-            >
-              {errors.name}
-            </p>
-          )}
+          {errors.name && <p className="form-error">{errors.name}</p>}
         </div>
 
-        <div style={{ marginBottom: "1rem" }}>
-          <label
-            htmlFor="cost"
-            style={{
-              display: "block",
-              marginBottom: "0.5rem",
-              color: "#333",
-            }}
-          >
+        <div className="form-group">
+          <label htmlFor="cost" className="form-label">
             Cena
           </label>
           <input
@@ -207,101 +161,65 @@ const ProductForm = ({ onSubmit, product }) => {
             value={formData.cost}
             onChange={handleChange}
             placeholder="Cena v Kč"
-            style={{
-              width: "100%",
-              padding: "0.8rem",
-              fontSize: "1rem",
-              borderRadius: "5px",
-              border: errors.cost ? "1px solid red" : "1px solid #ccc",
-              boxSizing: "border-box",
-              height: "44px",
-            }}
+            className={`form-input ${errors.cost ? "error" : ""}`}
           />
-          {errors.cost && (
-            <p
-              style={{ color: "red", marginTop: "0.5rem", fontSize: "0.9rem" }}
-            >
-              {errors.cost}
-            </p>
-          )}
+          {errors.cost && <p className="form-error">{errors.cost}</p>}
         </div>
 
-        <div style={{ marginBottom: "1rem" }}>
+        <div className="form-group">
+          <label htmlFor="image" className="form-label">
+            Obrázek produktu
+          </label>
           <input
             type="text"
             name="image"
             value={formData.image}
             onChange={handleChange}
-            placeholder="URL obrázku"
-            style={{
-              width: "100%",
-              padding: "0.8rem",
-              fontSize: "1rem",
-              borderRadius: "5px",
-              border: errors.image ? "1px solid red" : "1px solid #ccc",
-              boxSizing: "border-box",
-              height: "44px",
-              paddingRight: "2.5rem",
-            }}
+            placeholder="URL obrázku nebo nahrajte soubor"
+            className={`form-input ${errors.image ? "error" : ""}`}
           />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            style={{ width: "100%", padding: "0.8rem", marginTop: "1rem" }}
-          />
-          {errors.image && (
-            <p
-              style={{ color: "red", marginTop: "0.5rem", fontSize: "0.9rem" }}
-            >
-              {errors.image}
-            </p>
+          <div style={{ marginTop: "0.5rem" }}>
+            <label htmlFor="file-upload" className="form-label">
+              Nebo nahrajte soubor:
+            </label>
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="file-input"
+            />
+          </div>
+          {formData.image && (
+            <div style={{ marginTop: "1rem", textAlign: "center" }}>
+              <img
+                src={formData.image}
+                alt="Náhled"
+                style={{
+                  maxWidth: "200px",
+                  maxHeight: "200px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                }}
+              />
+            </div>
           )}
+          {errors.image && <p className="form-error">{errors.image}</p>}
         </div>
 
-        <div style={{ marginBottom: "1.5rem" }}>
+        <div className="form-group">
           <input
             type="text"
             name="contact"
             value={formData.contact}
             onChange={handleChange}
             placeholder="Kontakt (email nebo telefon)"
-            style={{
-              width: "100%",
-              padding: "0.8rem",
-              fontSize: "1rem",
-              borderRadius: "5px",
-              border: errors.contact ? "1px solid red" : "1px solid #ccc",
-              boxSizing: "border-box",
-              height: "44px",
-              paddingRight: "2.5rem",
-            }}
+            className={`form-input ${errors.contact ? "error" : ""}`}
           />
-          {errors.contact && (
-            <p
-              style={{ color: "red", marginTop: "0.5rem", fontSize: "0.9rem" }}
-            >
-              {errors.contact}
-            </p>
-          )}
+          {errors.contact && <p className="form-error">{errors.contact}</p>}
         </div>
 
-        <button
-          type="submit"
-          style={{
-            width: "100%",
-            padding: "0.8rem",
-            fontSize: "1.1rem",
-            backgroundColor: "#007BFF",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            transition: "background-color 0.3s",
-          }}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = "#0056b3")}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = "#007BFF")}
-        >
+        <button type="submit" className="submit-button">
           Uložit
         </button>
       </form>

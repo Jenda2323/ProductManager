@@ -1,0 +1,335 @@
+/* Home.css - Styly pro hlavní stránku */
+
+.home-container {
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.home-container.dark {
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+/* Navigační lišta */
+.home-navbar {
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.home-navbar.dark {
+  background-color: #2d2d2d;
+}
+
+.home-navbar h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.home-navbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.theme-toggle-btn {
+  padding: 0.5rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  transition: background-color 0.3s;
+}
+
+.theme-toggle-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.theme-toggle-btn.dark:hover {
+  background-color: #4a4a4a;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #f8f9fa;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-info.dark {
+  background-color: #2d2d2d;
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-avatar img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #e0e0e0;
+}
+
+.user-avatar.dark img {
+  border-color: #4a4a4a;
+}
+
+.user-name {
+  color: #333;
+  font-weight: 500;
+}
+
+.user-name.dark {
+  color: #fff;
+}
+
+.logout-btn {
+  padding: 0.5rem 1rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
+/* Hlavní obsah */
+.home-content {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.search-section {
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  flex: 1;
+  background-color: #fff;
+  color: #333;
+}
+
+.search-input.dark {
+  background-color: #2d2d2d;
+  color: #fff;
+}
+
+.add-product-btn {
+  padding: 0.5rem 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-product-btn:hover {
+  background-color: #218838;
+}
+
+/* Loading a error stavy */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.loading.dark {
+  color: #ccc;
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: #dc3545;
+}
+
+/* Grid produktů */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.product-card.dark {
+  background-color: #2d2d2d;
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.product-name {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.product-name.dark {
+  color: #fff;
+}
+
+.product-price {
+  margin: 0 0 1rem 0;
+  color: #666;
+  font-weight: 600;
+}
+
+.product-price.dark {
+  color: #ccc;
+}
+
+.product-contact {
+  margin: 0 0 1rem 0;
+  color: #666;
+}
+
+.product-contact.dark {
+  color: #ccc;
+}
+
+.product-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-btn {
+  padding: 0.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+  transition: background-color 0.3s;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-btn {
+  padding: 0.5rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+  transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+/* Modal styly */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content.dark {
+  background-color: #2d2d2d;
+  color: #fff;
+}
+
+.cancel-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.cancel-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Responsivní design */
+@media (max-width: 768px) {
+  .home-navbar {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .search-section {
+    flex-direction: column;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+}

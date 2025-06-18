@@ -1,23 +1,21 @@
-//server.js
+//server.js - Hlavní server soubor
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
-import passport from "passport";
 import session from "express-session";
-import connectDB from "./config/db.js";
-import productRoutes from "./routes/product.routes.js";
-import authRoutes from "./routes/auth.routes.js";
+import passport from "passport";
 import path from "path";
 import { fileURLToPath } from "url";
+import { dirname } from "path";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/auth.routes.js";
+import productRoutes from "./routes/product.routes.js";
 
-// Get current directory
+// Získání aktuálního adresáře
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
-// Load environment variables
-console.log("Current directory:", __dirname);
-console.log("Loading .env file...");
-dotenv.config();
+// Načtení proměnných prostředí
 console.log("Environment variables loaded:", {
   NODE_ENV: process.env.NODE_ENV,
   PORT: process.env.PORT,
@@ -31,7 +29,7 @@ console.log("Environment variables loaded:", {
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
+// Připojení k MongoDB
 connectDB();
 
 // Middleware
@@ -42,40 +40,38 @@ app.use(
   })
 );
 
-// Increase payload size limit
+// Zvýšení limitu velikosti dat
 app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // Session middleware
 app.use(
   session({
-    secret: process.env.JWT_SECRET || "your-secret-key",
+    secret: process.env.SESSION_SECRET || "your-secret-key",
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hodin
     },
   })
 );
 
-// Initialize Passport
+// Inicializace Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Error handling middleware
+// Middleware pro zpracování chyb
 app.use((err, req, res, next) => {
-  console.error("Error:", err);
-  res
-    .status(500)
-    .json({ message: "Internal Server Error", error: err.message });
+  console.error(err.stack);
+  res.status(500).send("Něco se pokazilo!");
 });
 
-// Routes
-app.use("/api/products", productRoutes);
+// Cesty
 app.use("/api/users", authRoutes);
+app.use("/api/products", productRoutes);
 
-// Serve static files from the React app
+// Obsluha statických souborů z React aplikace
 if (process.env.NODE_ENV === "development") {
   app.use(express.static(path.join(__dirname, "frontend/build")));
   app.get("*", (req, res) => {
@@ -83,9 +79,9 @@ if (process.env.NODE_ENV === "development") {
   });
 }
 
-// Start server
+// Spuštění serveru
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server běží na portu ${PORT}`);
   console.log("Environment variables:", {
     NODE_ENV: process.env.NODE_ENV,
     FRONTEND_URL: process.env.FRONTEND_URL,

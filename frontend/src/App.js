@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 const API_URL = "https://findproducts-backend.onrender.com/api";
 const BASE_URL = "https://janfiser.hys.cz/Projects/findproducts";
 
-// Protected Route component
+// Komponenta pro chráněné cesty
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
@@ -43,13 +43,13 @@ const AppContent = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Check for token in URL
+    // Kontrola tokenu v URL
     const params = new URLSearchParams(location.search);
     const token = params.get("token");
     if (token) {
       console.log("Našel jsem token v URL:", token);
       login(token);
-      // Remove token from URL
+      // Odstranění tokenu z URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [location, login]);

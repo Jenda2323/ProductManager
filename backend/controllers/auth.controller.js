@@ -1,73 +1,74 @@
-//backend/controllers/auth.controller.js
+//backend/controllers/auth.controller.js - Kontroler pro autentizaci
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 import User from "../models/user.model.js";
-import "../config/passport.js"; // Import passport configuration
+import "../config/passport.js"; // Import konfigurace passport
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Regular Signup Controller
+// Kontroler pro běžnou registraci
 export const signupUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ email, password: hashedPassword });
-    res.status(201).json({ message: "Signup successful" });
+    res.status(201).json({ message: "Registrace úspěšná" });
   } catch (error) {
-    res.status(400).json({ message: "User already exists" });
+    res.status(400).json({ message: "Uživatel již existuje" });
   }
 };
 
-// Regular Login Controller
+// Kontroler pro běžné přihlášení
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user)
+      return res.status(404).json({ message: "Uživatel nebyl nalezen" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Neplatné přihlašovací údaje" });
 
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
       expiresIn: "1h",
     });
     res.json({ token });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Chyba serveru" });
   }
 };
 
-// Google OAuth route
+// Google OAuth cesta
 export const googleAuth = passport.authenticate("google", {
   scope: ["profile", "email"],
   callbackURL:
     "https://findproducts-backend.onrender.com/api/users/auth/google/callback",
 });
 
-// Google OAuth callback route
+// Google OAuth callback cesta
 export const googleAuthRedirect = (req, res) => {
   try {
-    console.log("Google auth callback - User:", req.user);
+    console.log("Google auth callback - Uživatel:", req.user);
 
     if (!req.user) {
-      console.error("No user in request");
+      console.error("Žádný uživatel v požadavku");
       return res.redirect(`${process.env.FRONTEND_URL}/login?error=no_user`);
     }
 
-    // Create JWT token
+    // Vytvoření JWT tokenu
     const token = jwt.sign({ id: req.user._id }, JWT_SECRET, {
       expiresIn: "1d",
     });
 
-    console.log("Generated token for user:", req.user._id);
+    console.log("Vygenerovaný token pro uživatele:", req.user._id);
 
-    // Redirect to frontend with token (without index.html)
+    // Přesměrování na frontend s tokenem (bez index.html)
     const frontendUrl = process.env.FRONTEND_URL.replace("/index.html", "");
     res.redirect(`${frontendUrl}?token=${token}`);
   } catch (error) {
-    console.error("Error in googleAuthRedirect:", error);
+    console.error("Chyba v googleAuthRedirect:", error);
     res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
   }
 };

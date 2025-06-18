@@ -1,0 +1,92 @@
+/* ProductList.css - Styly pro seznam produktů */
+
+.product-list-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.product-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.product-list-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #333;
+}
+
+.no-products {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: #dc3545;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Dark mode styles */
+.product-list-container.dark {
+  background-color: #1a1a1a;
+}
+
+.product-list-container.dark .product-list-title {
+  color: #fff;
+}
+
+.product-list-container.dark .no-products,
+.product-list-container.dark .loading {
+  color: #ccc;
+}
+
+.product-list-container.dark .modal-content {
+  background-color: #2d2d2d;
+  color: #fff;
+}
+
+.product-list-container.dark .modal-title {
+  color: #fff;
+}

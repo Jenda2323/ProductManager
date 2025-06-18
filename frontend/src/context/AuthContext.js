@@ -1,4 +1,4 @@
-// frontend/src/context/AuthContext.js
+// frontend/src/context/AuthContext.js - Kontext pro správu autentizace
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is logged in
+    // Kontrola, zda je uživatel přihlášen
     const token = localStorage.getItem("token");
     if (token) {
       checkAuthStatus(token);
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuth musí být použit uvnitř AuthProvider");
   }
   return context;
 };

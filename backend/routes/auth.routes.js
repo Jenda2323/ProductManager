@@ -1,4 +1,4 @@
-//backend/routes/auth.routes.js
+//backend/routes/auth.routes.js - Autentizační cesty
 import express from "express";
 import passport from "passport";
 import jwt from "jsonwebtoken";
@@ -13,7 +13,7 @@ import User from "../models/user.model.js";
 
 const router = express.Router();
 
-// Signup Route
+// Registrační cesta
 router.post("/signup", signupUser);
 
 // Login Route

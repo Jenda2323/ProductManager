@@ -1,5 +1,5 @@
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
+// jest-dom přidává vlastní jest matchers pro testování DOM uzlů.
+// umožňuje vám dělat věci jako:
 // expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
+// více informací: https://github.com/testing-library/jest-dom
+import "@testing-library/jest-dom";
