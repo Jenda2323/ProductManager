@@ -6,6 +6,10 @@ import ProductForm from "./ProductForm";
 import { useTheme } from "../context/ThemeContext";
 import "./Home.css";
 
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? "https://findproducts-backend.onrender.com/api"
+  : "http://localhost:5000/api";
+
 const Home = () => {
   const { user, logout } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
@@ -23,7 +27,7 @@ const Home = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://findproducts-backend.onrender.com/api/products",
+        `${API_URL}/products`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +48,7 @@ const Home = () => {
       const token = localStorage.getItem("token");
       if (editingProduct) {
         await axios.put(
-          `https://findproducts-backend.onrender.com/api/products/${editingProduct._id}`,
+          `${API_URL}/products/${editingProduct._id}`,
           productData,
           {
             headers: {
@@ -55,7 +59,7 @@ const Home = () => {
         toast.success("Produkt byl úspěšně upraven");
       } else {
         await axios.post(
-          "https://findproducts-backend.onrender.com/api/products",
+          `${API_URL}/products`,
           productData,
           {
             headers: {
@@ -79,7 +83,7 @@ const Home = () => {
       try {
         const token = localStorage.getItem("token");
         await axios.delete(
-          `https://findproducts-backend.onrender.com/api/products/${productId}`,
+          `${API_URL}/products/${productId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

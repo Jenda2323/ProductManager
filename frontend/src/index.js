@@ -8,10 +8,17 @@ import { AuthProvider } from "./context/AuthContext";
 import ErrorBoundary from "./ErrorBoundary";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+// Použij basename jen na produkci (Endora)
+const basename =
+  window.location.hostname === "janfiser.hys.cz"
+    ? "/Projects/findproducts"
+    : "";
+
 root.render(
   <React.StrictMode>
     <ErrorBoundary>
-      <BrowserRouter basename="/Projects/findproducts">
+      <BrowserRouter basename={basename}>
         <AuthProvider>
           <App />
         </AuthProvider>

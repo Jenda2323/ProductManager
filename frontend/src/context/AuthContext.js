@@ -2,8 +2,15 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "https://findproducts-backend.onrender.com/api";
-const FRONTEND_URL = "https://janfiser.hys.cz/Projects/findproducts";
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://findproducts-backend.onrender.com/api"
+    : "http://localhost:5000/api";
+
+const FRONTEND_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://janfiser.hys.cz/Projects/findproducts"
+    : "http://localhost:3000";
 
 const AuthContext = createContext(null);
 

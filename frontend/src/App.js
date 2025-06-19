@@ -4,12 +4,20 @@ import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import Login from "./components/Login";
 import Home from "./components/Home";
+import Footer from "./components/Footer";
 import { useAuth } from "./context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = "https://findproducts-backend.onrender.com/api";
-const BASE_URL = "https://janfiser.hys.cz/Projects/findproducts";
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://findproducts-backend.onrender.com/api"
+    : "http://localhost:5000/api";
+
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://janfiser.hys.cz/Projects/findproducts"
+    : "http://localhost:3000";
 
 // Komponenta pro chráněné cesty
 const ProtectedRoute = ({ children }) => {
@@ -55,20 +63,23 @@ const AppContent = () => {
   }, [location, login]);
 
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={isAuthenticated ? <Navigate to="/" /> : <Login />}
-      />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <div className="app-container">
+      <Routes>
+        <Route
+          path="/login"
+          element={isAuthenticated ? <Navigate to="/" /> : <Login />}
+        />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+      <Footer />
+    </div>
   );
 };
 

@@ -7,7 +7,7 @@ const ProductCard = ({ product, onDelete, onEdit }) => {
   const handleDownload = () => {
     const link = document.createElement("a");
     link.href = product.image;
-    link.download = product.name + ".jpg"; // Můžete upravit příponu podle formátu obrázku
+    link.download = product.name + ".jpg"; //  upravit příponu podle formátu obrázku
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

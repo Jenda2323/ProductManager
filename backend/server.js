@@ -72,10 +72,16 @@ app.use("/api/users", authRoutes);
 app.use("/api/products", productRoutes);
 
 // Obsluha statických souborů z React aplikace
-if (process.env.NODE_ENV === "development") {
-  app.use(express.static(path.join(__dirname, "frontend/build")));
+if (process.env.NODE_ENV === "production") {
+  // V produkci sloužíme build soubory
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend/build", "index.html"));
+    res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+  });
+} else {
+  // V development módu pouze API routes
+  app.get("/", (req, res) => {
+    res.json({ message: "FindProducts API běží v development módu" });
   });
 }
 

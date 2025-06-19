@@ -13,6 +13,7 @@ console.log("Passport config - Proměnné prostředí:", {
     ? "Nastaveno"
     : "Nenastaveno",
   FRONTEND_URL: process.env.FRONTEND_URL ? "Nastaveno" : "Nenastaveno",
+  NODE_ENV: process.env.NODE_ENV,
 });
 
 // Kontrola, zda jsou nastaveny požadované proměnné prostředí
@@ -23,13 +24,20 @@ if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
   process.exit(1);
 }
 
+// Podmíněná callback URL podle prostředí
+const callbackURL =
+  process.env.NODE_ENV === "production"
+    ? "https://findproducts-backend.onrender.com/api/users/auth/google/callback"
+    : "http://localhost:5000/api/users/auth/google/callback";
+
+console.log("Používám callback URL:", callbackURL);
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL:
-        "https://findproducts-backend.onrender.com/api/users/auth/google/callback",
+      callbackURL: callbackURL,
       scope: ["profile", "email"],
     },
     async (accessToken, refreshToken, profile, done) => {
